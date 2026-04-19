@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repository.UserDao;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 
 @Service
@@ -47,5 +48,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long id) {
         userDao.deleteById(id);
+    }
+
+    // временные пользователи для теста
+    @PostConstruct
+    public void init() {
+        if (userDao.count() == 0) {
+            User admin = new User("admin", "admin", "Владимир", "Калинин", 25);
+            User user = new User("user", "user", "Эрик", "Цой", 24);
+            addUser(admin);
+            addUser(user);
+        }
     }
 }
