@@ -24,6 +24,11 @@ public class UserController {
         return "redirect:/users";
     }
 
+    @GetMapping("/user")
+    public String userHome() {
+        return "user";
+    }
+
     @GetMapping("/users")
     public String getUsers(Model model) {
         model.addAttribute("users", userService.getUsers());
