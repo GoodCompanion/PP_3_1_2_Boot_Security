@@ -42,10 +42,12 @@ public class UserController {
     }
 
     @PostMapping("/users/add")
-    public String addUser(@RequestParam("name") String name,
+    public String addUser(@RequestParam("username") String username,
+                          @RequestParam("password") String password,
+                          @RequestParam("name") String name,
                           @RequestParam("surname") String surname,
                           @RequestParam("age") int age) {
-        User user = new User(name, surname, age);
+        User user = new User(username, password, name, surname, age);
         userService.addUser(user);
         return "redirect:/users";
     }
@@ -59,10 +61,12 @@ public class UserController {
 
     @PostMapping("/users/edit")
     public String updateUser(@RequestParam("id") Long id,
+                             @RequestParam("username") String username,
+                             @RequestParam("password") String password,
                              @RequestParam("name") String name,
                              @RequestParam("surname") String surname,
                              @RequestParam("age") int age) {
-        User user = new User(name, surname, age);
+        User user = new User(username, password, name, surname, age);
         user.setId(id);
         userService.updateUser(user);
         return "redirect:/users";
