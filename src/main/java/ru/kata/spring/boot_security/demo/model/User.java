@@ -5,7 +5,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -23,6 +24,14 @@ public class User implements UserDetails {
     @Column(name = "age")
     private int age;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles = new HashSet<>();
+
     public User() {
     }
 
@@ -30,6 +39,13 @@ public class User implements UserDetails {
         this.name = name;
         this.surname = surname;
         this.age = age;
+    }
+
+    public User(String name, String surname, int age, Set<Role> roles) {
+        this.name = name;
+        this.surname = surname;
+        this.age = age;
+        this.roles = roles;
     }
 
     public Long getId() {
@@ -64,38 +80,47 @@ public class User implements UserDetails {
         this.age = age;
     }
 
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return roles;
     }
 
     @Override
     public String getPassword() {
-        return "";
+        return surname;
     }
 
     @Override
     public String getUsername() {
-        return "";
+        return name;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 }
