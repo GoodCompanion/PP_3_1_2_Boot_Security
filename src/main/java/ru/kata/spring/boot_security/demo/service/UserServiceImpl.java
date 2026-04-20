@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getUsers() {
-        return userDao.findAll();
+        return userDao.findAllWithRoles();
     }
 
     @Override
