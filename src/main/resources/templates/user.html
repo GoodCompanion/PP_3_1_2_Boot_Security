@@ -13,16 +13,21 @@
 
         body {
             font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 20px;
         }
 
         .container {
-            max-width: 600px;
+            max-width: 700px;
+            width: 100%;
             margin: 0 auto;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
             padding: 30px;
         }
 
@@ -31,31 +36,39 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         h1 {
             color: #333;
+            font-size: 24px;
+            white-space: nowrap;
         }
 
         .logout-btn {
-            background-color: #dc3545;
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
             color: white;
-            padding: 8px 16px;
+            padding: 10px 20px;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
             font-size: 14px;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+            white-space: nowrap;
         }
 
         .logout-btn:hover {
-            background-color: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
         }
 
         .user-card {
             border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            background-color: #fafafa;
+            border-radius: 10px;
+            padding: 25px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
         }
 
         .user-info {
@@ -71,11 +84,12 @@
 
         .user-info span {
             color: #333;
+            font-weight: 500;
         }
 
         .roles {
-            margin-top: 15px;
-            padding-top: 15px;
+            margin-top: 20px;
+            padding-top: 20px;
             border-top: 1px solid #ddd;
         }
 
@@ -83,95 +97,126 @@
             font-weight: bold;
             color: #555;
             display: block;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .role-badge {
             display: inline-block;
-            background-color: #007bff;
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
             color: white;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 12px;
-            margin-right: 5px;
-            margin-bottom: 5px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            font-weight: bold;
         }
 
         .buttons {
             display: flex;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
         }
 
         .btn {
             display: inline-block;
-            padding: 10px 20px;
+            padding: 12px 24px;
             font-size: 14px;
             text-align: center;
             text-decoration: none;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
         }
 
         .btn-primary {
-            background-color: #007bff;
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
             color: white;
         }
 
         .btn-primary:hover {
-            background-color: #0056b3;
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
         }
 
         .btn-secondary {
-            background-color: #6c757d;
+            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
             color: white;
         }
 
         .btn-secondary:hover {
-            background-color: #5a6268;
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
         }
 
         .welcome {
-            font-size: 24px;
-            margin-bottom: 20px;
-            color: #4CAF50;
+            font-size: 28px;
+            margin-bottom: 25px;
+            color: #667eea;
+            text-align: center;
+            font-weight: bold;
+            word-break: break-word;
+        }
+
+        /* Адаптивность для маленьких экранов */
+        @media (max-width: 500px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            h1 {
+                white-space: normal;
+            }
+
+            .container {
+                padding: 20px;
+            }
         }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
-        <h1>Профиль пользователя</h1>
+        <h1>👤 Профиль пользователя</h1>
         <form th:action="@{/logout}" method="post">
-            <button type="submit" class="logout-btn">Выйти</button>
+            <button type="submit" class="logout-btn">🚪 Выйти</button>
         </form>
     </div>
 
     <div class="user-card">
+        <div class="welcome" th:text="'Добро пожаловать, ' + ${user.name} + '!'">
+            Добро пожаловать!
+        </div>
+
         <div class="user-info">
-            <label>Логин:</label>
+            <label>👤 Логин:</label>
             <span th:text="${user.username}">username</span>
         </div>
 
         <div class="user-info">
-            <label>Имя:</label>
+            <label>📛 Имя:</label>
             <span th:text="${user.name}">Имя</span>
         </div>
 
         <div class="user-info">
-            <label>Фамилия:</label>
+            <label>📛 Фамилия:</label>
             <span th:text="${user.surname}">Фамилия</span>
         </div>
 
         <div class="user-info">
-            <label>Возраст:</label>
+            <label>🎂 Возраст:</label>
             <span th:text="${user.age}">25</span>
         </div>
 
         <div class="roles">
-            <label>Ваши роли:</label>
+            <label>🔑 Ваши роли:</label>
             <div>
                 <span th:each="role : ${user.roles}"
                       class="role-badge"
@@ -184,9 +229,9 @@
         <a th:href="@{/admin}"
            class="btn btn-primary"
            sec:authorize="hasRole('ADMIN')">
-            Панель администратора
+            👑 Панель администратора
         </a>
-        <a href="javascript:history.back()" class="btn btn-secondary">Назад</a>
+        <a href="javascript:history.back()" class="btn btn-secondary">↩️ Назад</a>
     </div>
 </div>
 </body>
