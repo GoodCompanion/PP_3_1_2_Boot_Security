@@ -57,6 +57,28 @@
             border-color: #4CAF50;
         }
 
+        .roles-group {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .role-item {
+            margin-bottom: 10px;
+        }
+
+        .role-item input {
+            width: auto;
+            margin-right: 8px;
+        }
+
+        .role-item label {
+            display: inline;
+            font-weight: normal;
+        }
+
         .btn {
             display: inline-block;
             padding: 10px 20px;
@@ -101,7 +123,17 @@
 <div class="container">
     <h2>Добавление пользователя</h2>
 
-    <form th:action="@{/users/add}" method="post">
+    <form th:action="@{/admin/add}" method="post">
+        <div class="form-group">
+            <label>Логин:</label>
+            <input type="text" name="username" required>
+        </div>
+
+        <div class="form-group">
+            <label>Пароль:</label>
+            <input type="password" name="password" required>
+        </div>
+
         <div class="form-group">
             <label>Имя:</label>
             <input type="text" name="name" required>
@@ -117,11 +149,21 @@
             <input type="number" name="age" required min="0" max="150">
         </div>
 
+        <div class="form-group">
+            <label>Роли:</label>
+            <div class="roles-group">
+                <div th:each="role : ${allRoles}" class="role-item">
+                    <input type="checkbox" name="roleIds" th:value="${role.id}" :id="'role_' + ${role.id}">
+                    <label th:for="'role_' + ${role.id}" th:text="${role.name}">ROLE_USER</label>
+                </div>
+            </div>
+        </div>
+
         <div class="buttons">
             <button type="submit" class="btn btn-primary">Сохранить</button>
-            <a th:href="@{/users}" class="btn btn-cancel">Отмена</a>
+            <a th:href="@{/admin}" class="btn btn-cancel">Отмена</a>
         </div>
     </form>
 </div>
 </body>
-</html>
+</html>>
