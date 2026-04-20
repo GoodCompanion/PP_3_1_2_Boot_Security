@@ -19,8 +19,16 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("/login")
+    public String loginPage() {
+        return "login";
+    }
+
     @GetMapping("/")
     public String home(@AuthenticationPrincipal User currentUser) {
+        if (currentUser == null) {
+            return "redirect:/login";
+        }
         if (currentUser.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
             return "redirect:/admin";
         }
@@ -31,6 +39,9 @@ public class UserController {
     public String userPage(@PathVariable("username") String username,
                            Model model,
                            @AuthenticationPrincipal User currentUser) {
+        if (currentUser == null) {
+            return "redirect:/login";
+        }
         if (!currentUser.getUsername().equals(username) && currentUser.getAuthorities().stream().noneMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
             return "redirect:/user/" + currentUser.getUsername();
         }
