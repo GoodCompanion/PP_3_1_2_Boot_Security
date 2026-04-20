@@ -12,16 +12,20 @@
 
         body {
             font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 20px;
         }
 
         .container {
             max-width: 500px;
             margin: 0 auto;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
             padding: 30px;
         }
 
@@ -29,6 +33,7 @@
             color: #333;
             margin-bottom: 25px;
             text-align: center;
+            font-size: 24px;
         }
 
         .form-group {
@@ -44,25 +49,27 @@
 
         input {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             border: 1px solid #ddd;
-            border-radius: 4px;
+            border-radius: 5px;
             font-size: 14px;
             font-family: Arial, sans-serif;
             box-sizing: border-box;
+            transition: border-color 0.3s;
         }
 
         input:focus {
             outline: none;
-            border-color: #4CAF50;
+            border-color: #667eea;
         }
 
         .roles-group {
             border: 1px solid #ddd;
-            border-radius: 4px;
+            border-radius: 5px;
             padding: 15px;
             max-height: 200px;
             overflow-y: auto;
+            background: #fafafa;
         }
 
         .role-item {
@@ -81,48 +88,44 @@
 
         .btn {
             display: inline-block;
-            padding: 10px 20px;
+            padding: 12px 24px;
             font-size: 14px;
             font-family: Arial, sans-serif;
             text-align: center;
             text-decoration: none;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s;
-            min-width: 100px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            min-width: 120px;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
         }
 
         .btn-primary {
-            background-color: #4CAF50;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
             color: white;
         }
 
         .btn-primary:hover {
-            background-color: #45a049;
-        }
-
-        .btn-cancel {
-            background-color: #666;
-            color: white;
-        }
-
-        .btn-cancel:hover {
-            background-color: #555;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
         }
 
         .btn-back {
-            background-color: #6c757d;
+            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
             color: white;
         }
 
         .btn-back:hover {
-            background-color: #5a6268;
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
         }
 
         .buttons {
             display: flex;
-            gap: 10px;
+            gap: 15px;
             justify-content: center;
             margin-top: 25px;
         }
@@ -130,36 +133,36 @@
 </head>
 <body>
 <div class="container">
-    <h2>Добавление пользователя</h2>
+    <h2>➕ Добавление пользователя</h2>
 
     <form th:action="@{/admin/add}" method="post">
         <div class="form-group">
-            <label>Логин:</label>
-            <input type="text" name="username" required>
+            <label>👤 Логин:</label>
+            <input type="text" name="username" placeholder="Введите логин" required>
         </div>
 
         <div class="form-group">
-            <label>Пароль:</label>
-            <input type="password" name="password" required>
+            <label>🔒 Пароль:</label>
+            <input type="password" name="password" placeholder="Введите пароль" required>
         </div>
 
         <div class="form-group">
-            <label>Имя:</label>
-            <input type="text" name="name" required>
+            <label>📛 Имя:</label>
+            <input type="text" name="name" placeholder="Введите имя" required>
         </div>
 
         <div class="form-group">
-            <label>Фамилия:</label>
-            <input type="text" name="surname" required>
+            <label>📛 Фамилия:</label>
+            <input type="text" name="surname" placeholder="Введите фамилию" required>
         </div>
 
         <div class="form-group">
-            <label>Возраст:</label>
-            <input type="number" name="age" required min="0" max="150">
+            <label>🎂 Возраст:</label>
+            <input type="number" name="age" placeholder="Введите возраст" required min="0" max="150">
         </div>
 
         <div class="form-group">
-            <label>Роли:</label>
+            <label>🔑 Роли:</label>
             <div class="roles-group">
                 <div th:each="role : ${allRoles}" class="role-item">
                     <input type="checkbox" name="roleIds" th:value="${role.id}" :id="'role_' + ${role.id}">
@@ -169,8 +172,8 @@
         </div>
 
         <div class="buttons">
-            <button type="submit" class="btn btn-primary">Сохранить</button>
-            <a th:href="@{/admin}" class="btn btn-back">Назад</a>
+            <button type="submit" class="btn btn-primary">💾 Сохранить</button>
+            <a th:href="@{/admin}" class="btn btn-back">↩️ Назад</a>
         </div>
     </form>
 </div>
