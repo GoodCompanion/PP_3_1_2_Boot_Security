@@ -17,7 +17,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1300px;
             margin: 0 auto;
             background-color: white;
             border-radius: 8px;
@@ -53,7 +53,7 @@
         .btn {
             display: inline-block;
             padding: 8px 12px;
-            font-size: 14px;
+            font-size: 13px;
             font-family: Arial, sans-serif;
             text-align: center;
             text-decoration: none;
@@ -75,7 +75,6 @@
         .btn-view {
             background-color: #17a2b8;
             color: white;
-            margin-right: 5px;
         }
 
         .btn-view:hover {
@@ -85,7 +84,6 @@
         .btn-edit {
             background-color: #ffc107;
             color: #333;
-            margin-right: 5px;
         }
 
         .btn-edit:hover {
@@ -111,6 +109,7 @@
             padding: 12px;
             text-align: left;
             border-bottom: 1px solid #ddd;
+            vertical-align: middle;
         }
 
         th {
@@ -120,7 +119,7 @@
         }
 
         tr:hover {
-            background-color: #f5f5f5;
+            background-color: #fafafa;
         }
 
         .empty-message {
@@ -132,6 +131,7 @@
 
         .actions {
             display: flex;
+            flex-wrap: wrap;
             gap: 5px;
         }
 
@@ -139,9 +139,52 @@
             margin-bottom: 20px;
         }
 
-        .roles-list {
-            font-size: 12px;
-            color: #666;
+        .roles-container {
+            min-width: 140px;
+        }
+
+        .role-badge {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            white-space: nowrap;
+            margin-bottom: 4px;
+            margin-right: 4px;
+        }
+
+        .more-roles {
+            margin-top: 4px;
+        }
+
+        .toggle-roles-btn {
+            background: none;
+            border: none;
+            color: #007bff;
+            cursor: pointer;
+            font-size: 11px;
+            padding: 2px 0;
+            text-decoration: underline;
+        }
+
+        .toggle-roles-btn:hover {
+            color: #0056b3;
+        }
+
+        .hidden-roles {
+            display: none;
+        }
+
+        .hidden-roles.show {
+            display: inline;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
         }
     </style>
 </head>
@@ -173,32 +216,70 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="user : ${users}">
+        <tr th:each="user, userStat : ${users}">
             <td th:text="${user.id}">1</td>
             <td th:text="${user.username}">admin</td>
             <td th:text="${user.name}">Иван</td>
             <td th:text="${user.surname}">Иванов</td>
             <td th:text="${user.age}">25</td>
-            <td>
+            <td class="roles-container">
                 <span th:each="role, iterStat : ${user.roles}"
-                      th:text="${role.name} + (iterStat.last ? '' : ', ')">ROLE_USER</span>
+                      th:if="${iterStat.index < 2}">
+                    <span class="role-badge" th:text="${role.name}">ROLE_USER</span>
+                </span>
+
+                <th:block th:if="${user.roles.size() > 2}">
+                    <div class="more-roles">
+                        <span class="hidden-roles" th:id="'hidden-roles-' + ${userStat.index}">
+                            <span th:each="role, iterStat : ${user.roles}"
+                                  th:if="${iterStat.index >= 2}">
+                                <span class="role-badge" th:text="${role.name}">ROLE_USER</span>
+                            </span>
+                        </span>
+                        <button type="button"
+                                class="toggle-roles-btn"
+                                th:attr="onclick='toggleRoles(' + ${userStat.index} + ')'"
+                                th:id="'toggle-btn-' + ${userStat.index}">
+                            + ещё <span th:text="${user.roles.size() - 2}">0</span>
+                        </button>
+                    </div>
+                </th:block>
             </td>
-            <td class="actions">
-                <a th:href="@{/user/{username}(username=${user.username})}"
-                   class="btn btn-view">Просмотр</a>
-                <a th:href="@{/admin/edit/{id}(id=${user.id})}"
-                   class="btn btn-edit">Редактировать</a>
-                <form th:action="@{/admin/delete/{id}(id=${user.id})}"
-                      method="post" style="display:inline;">
-                    <button type="submit" class="btn btn-delete"
-                            onclick="return confirm('Удалить пользователя [[${user.username}]]?')">
-                        Удалить
-                    </button>
-                </form>
+            <td>
+                <div class="action-buttons">
+                    <a th:href="@{/user/{username}(username=${user.username})}"
+                       class="btn btn-view">Просмотр</a>
+                    <a th:href="@{/admin/edit/{id}(id=${user.id})}"
+                       class="btn btn-edit">Ред.</a>
+                    <form th:action="@{/admin/delete/{id}(id=${user.id})}"
+                          method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-delete"
+                                onclick="return confirm('Удалить [[${user.username}]]?')">
+                            Удалить
+                        </button>
+                    </form>
+                </div>
             </td>
         </tr>
         </tbody>
     </table>
 </div>
+
+<script>
+    function toggleRoles(userIndex) {
+        const hiddenRoles = document.getElementById('hidden-roles-' + userIndex);
+        const toggleBtn = document.getElementById('toggle-btn-' + userIndex);
+        const hiddenCount = parseInt(toggleBtn.querySelector('span').textContent);
+        const totalRoles = 2 + hiddenCount;
+
+        if (hiddenRoles.classList.contains('show')) {
+            hiddenRoles.classList.remove('show');
+            toggleBtn.innerHTML = '+ ещё <span>' + hiddenCount + '</span>';
+        } else {
+            hiddenRoles.classList.add('show');
+            toggleBtn.textContent = 'Скрыть';
+        }
+    }
+</script>
 </body>
 </html>
