@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Страница пользователя</title>
@@ -163,7 +163,7 @@
 
     <a th:href="@{/admin}"
        class="btn-back"
-       th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+       sec:authorize="hasRole('ADMIN')">
         Вернуться в панель администратора
     </a>
 </div>
