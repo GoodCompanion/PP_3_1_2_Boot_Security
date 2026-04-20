@@ -1,11 +1,11 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
@@ -20,61 +20,22 @@ public class UserController {
     }
 
     @GetMapping("/")
-    public String home() {
-        return "redirect:/users";
+    public String home(@AuthenticationPrincipal User currentUser) {
+        if (currentUser.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+            return "redirect:/admin";
+        }
+        return "redirect:/user/" + currentUser.getUsername();
     }
 
-    @GetMapping("/user")
-    public String userHome() {
-        return "user";
-    }
-
-    @GetMapping("/users")
-    public String getUsers(Model model) {
-        model.addAttribute("users", userService.getUsers());
-        return "list";
-    }
-
-    @GetMapping("/users/add")
-    public String showAddForm(Model model) {
-        model.addAttribute("user", new User());
-        return "add";
-    }
-
-    @PostMapping("/users/add")
-    public String addUser(@RequestParam("username") String username,
-                          @RequestParam("password") String password,
-                          @RequestParam("name") String name,
-                          @RequestParam("surname") String surname,
-                          @RequestParam("age") int age) {
-        User user = new User(username, password, name, surname, age);
-        userService.addUser(user);
-        return "redirect:/users";
-    }
-
-    @GetMapping("/users/edit")
-    public String showEditForm(@RequestParam("id") Long id, Model model) {
-        User user = userService.getUser(id);
+    @GetMapping("/user/{username}")
+    public String userPage(@PathVariable("username") String username,
+                           Model model,
+                           @AuthenticationPrincipal User currentUser) {
+        if (!currentUser.getUsername().equals(username) && currentUser.getAuthorities().stream().noneMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+            return "redirect:/user/" + currentUser.getUsername();
+        }
+        User user = userService.findByUsername(username);
         model.addAttribute("user", user);
-        return "edit";
-    }
-
-    @PostMapping("/users/edit")
-    public String updateUser(@RequestParam("id") Long id,
-                             @RequestParam("username") String username,
-                             @RequestParam("password") String password,
-                             @RequestParam("name") String name,
-                             @RequestParam("surname") String surname,
-                             @RequestParam("age") int age) {
-        User user = new User(username, password, name, surname, age);
-        user.setId(id);
-        userService.updateUser(user);
-        return "redirect:/users";
-    }
-
-    @PostMapping("/users/delete")
-    public String deleteUser(@RequestParam("id") Long id) {
-        userService.deleteUser(id);
-        return "redirect:/users";
+        return "user";
     }
 }
