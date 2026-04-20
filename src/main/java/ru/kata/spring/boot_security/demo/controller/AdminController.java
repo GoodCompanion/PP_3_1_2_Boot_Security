@@ -30,9 +30,6 @@ public class AdminController {
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public String adminPage(Model model,@AuthenticationPrincipal User currentUser) {
-        if (currentUser == null || currentUser.getAuthorities().stream().noneMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))){
-            return "redirect:/login?access_denied";
-        }
         model.addAttribute("users", userService.getUsers());
         return "admin";
     }
