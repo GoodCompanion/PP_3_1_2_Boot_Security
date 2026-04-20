@@ -2,6 +2,7 @@ package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,10 @@ public class AdminController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public String adminPage(Model model) {
+    public String adminPage(Model model,@AuthenticationPrincipal User currentUser) {
+        if (currentUser == null || currentUser.getAuthorities().stream().noneMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))){
+            return "redirect:/login?access_denied";
+        }
         model.addAttribute("users", userService.getUsers());
         return "admin";
     }
