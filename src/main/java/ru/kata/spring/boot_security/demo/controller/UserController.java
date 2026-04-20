@@ -35,6 +35,9 @@ public class UserController {
             return "redirect:/user/" + currentUser.getUsername();
         }
         User user = userService.findByUsername(username);
+        if (user == null) {
+            return "redirect:/";
+        }
         model.addAttribute("user", user);
         return "user";
     }
