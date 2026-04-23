@@ -65,6 +65,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public User getUserWithRoles(Long id) {
+        return userDao.findByIdWithRoles(id).orElseThrow(() -> new RuntimeException("User not found: " + id));
+    }
+
+    @Override
     public List<User> getUsers() {
         return userDao.findAllWithRoles();
     }

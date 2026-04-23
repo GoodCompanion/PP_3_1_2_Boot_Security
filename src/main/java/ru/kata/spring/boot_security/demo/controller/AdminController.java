@@ -59,9 +59,8 @@ public class AdminController {
 
     @GetMapping("/edit/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    @Transactional(readOnly = true)
     public String showEditForm(@PathVariable("id") Long id, Model model) {
-        User user = userService.getUser(id);
+        User user = userService.getUserWithRoles(id);
         model.addAttribute("user", user);
         model.addAttribute("allRoles", roleService.getAllRoles());
         return "edit";
