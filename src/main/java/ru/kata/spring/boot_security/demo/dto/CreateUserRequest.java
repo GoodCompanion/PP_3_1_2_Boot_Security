@@ -29,7 +29,7 @@ public class CreateUserRequest {
     @Max(value = 150)
     private int age;
 
-    private Set<Role> roleIds;
+    private Set<Long> roleIds;
 
     public String getUsername() {
         return username;
@@ -71,11 +71,11 @@ public class CreateUserRequest {
         this.age = age;
     }
 
-    public Set<Role> getRoleIds() {
+    public Set<Long> getRoleIds() {
         return roleIds;
     }
 
-    public void setRoleIds(Set<Role> roleIds) {
+    public void setRoleIds(Set<Long> roleIds) {
         this.roleIds = roleIds;
     }
 }
