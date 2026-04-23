@@ -1,6 +1,7 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,15 +37,8 @@ public class UserController {
     }
 
     @GetMapping("/user/{username}")
-    public String userPage(@PathVariable("username") String username,
-                           Model model,
-                           @AuthenticationPrincipal User currentUser) {
-        if (currentUser == null) {
-            return "redirect:/login";
-        }
-        if (!currentUser.getUsername().equals(username) && currentUser.getAuthorities().stream().noneMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-            return "redirect:/user/" + currentUser.getUsername();
-        }
+    @PreAuthorize("#username == authentication.name or hasRole('ADMIN')")
+    public String userPage(@PathVariable("username") String username, Model model) {
         User user = userService.findByUsername(username);
         if (user == null) {
             return "redirect:/";
