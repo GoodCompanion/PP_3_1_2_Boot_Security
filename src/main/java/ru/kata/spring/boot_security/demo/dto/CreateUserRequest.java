@@ -6,7 +6,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.List;
+import java.util.Set;
 
 public class CreateUserRequest {
     @NotBlank(message = "Логин обязателен")
@@ -29,7 +29,7 @@ public class CreateUserRequest {
     @Max(value = 150)
     private int age;
 
-    private List<Role> roleIds;
+    private Set<Role> roleIds;
 
     public String getUsername() {
         return username;
@@ -71,11 +71,11 @@ public class CreateUserRequest {
         this.age = age;
     }
 
-    public List<Role> getRoleIds() {
+    public Set<Role> getRoleIds() {
         return roleIds;
     }
 
-    public void setRoleIds(List<Role> roleIds) {
+    public void setRoleIds(Set<Role> roleIds) {
         this.roleIds = roleIds;
     }
 }
