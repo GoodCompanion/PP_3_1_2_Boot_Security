@@ -81,9 +81,7 @@ public class AdminController {
                              @RequestParam(value = "roleIds", required = false) Set<Long> roleIds) {
         User user = userService.getUser(id);
         user.setUsername(username);
-        if (password != null && !password.isEmpty()) {
-            user.setPassword(password);
-        }
+        user.setPassword(password);
         user.setName(name);
         user.setSurname(surname);
         user.setAge(age);
