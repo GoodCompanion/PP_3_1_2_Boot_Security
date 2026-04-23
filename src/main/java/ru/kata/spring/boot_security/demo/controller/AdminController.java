@@ -6,12 +6,15 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.kata.spring.boot_security.demo.dto.CreateUserRequest;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
+import javax.validation.Valid;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -30,7 +33,7 @@ public class AdminController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public String adminPage(Model model,@AuthenticationPrincipal User currentUser) {
+    public String adminPage(Model model, @AuthenticationPrincipal User currentUser) {
         model.addAttribute("users", userService.getUsers());
         return "admin";
     }
@@ -45,18 +48,11 @@ public class AdminController {
 
     @PostMapping("/add")
     @PreAuthorize("hasRole('ADMIN')")
-    public String addUser(@RequestParam("username") String username,
-                          @RequestParam("password") String password,
-                          @RequestParam("name") String name,
-                          @RequestParam("surname") String surname,
-                          @RequestParam("age") int age,
-                          @RequestParam("roleIds") Set<Long> roleIds) {
-        User user = new User(username, password, name, surname, age);
-        if (roleIds != null && !roleIds.isEmpty()) {
-            Set<Role> roles = roleIds.stream().map(roleService::getRoleById).collect(Collectors.toSet());
-            user.setRoles(roles);
+    public String addUser(@Valid CreateUserRequest request, BindingResult result) {
+        if (result.hasErrors()) {
+            return "add";
         }
-        userService.addUser(user);
+        userService.addUser(request);
         return "redirect:/admin";
     }
 

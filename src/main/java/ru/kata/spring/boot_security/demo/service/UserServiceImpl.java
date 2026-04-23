@@ -42,11 +42,10 @@ public class UserServiceImpl implements UserService {
     public void addUser(CreateUserRequest request) {
         User user = new User();
         user.setUsername(request.getUsername());
-        user.setPassword(request.getPassword());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setName(request.getName());
         user.setSurname(request.getSurname());
         user.setAge(request.getAge());
-
         if (request.getRoleIds() != null && !request.getRoleIds().isEmpty()) {
             Set<Role> roles = roleDao.findAllById(request.getRoleIds()).stream().collect(Collectors.toSet());
             user.setRoles(roles);
