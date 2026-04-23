@@ -17,7 +17,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
     private final UserDao userDao;
@@ -65,7 +64,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public User getUserWithRoles(Long id) {
         return userDao.findByIdWithRoles(id).orElseThrow(() -> new RuntimeException("User not found: " + id));
     }
