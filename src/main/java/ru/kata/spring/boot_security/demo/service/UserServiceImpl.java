@@ -5,6 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.dto.CreateUserRequest;
+import ru.kata.spring.boot_security.demo.dto.UpdateUserRequest;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repository.RoleDao;
@@ -78,6 +79,28 @@ public class UserServiceImpl implements UserService {
         } else {
             User existingUser = getUser(user.getId());
             user.setPassword(existingUser.getPassword());
+        }
+        userDao.save(user);
+    }
+
+    @Override
+    @Transactional
+    public void updateUser(UpdateUserRequest request) {
+        User user = userDao.findById(request.getId()).orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setUsername(request.getUsername());
+
+        if (request.getPassword() != null && !request.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
+
+        user.setName(request.getName());
+        user.setSurname(request.getSurname());
+        user.setAge(request.getAge());
+
+        if (request.getRoleIds() != null && !request.getRoleIds().isEmpty()) {
+            Set<Role> roles = roleDao.findAllById(request.getRoleIds()).stream().collect(Collectors.toSet());
+            user.setRoles(roles);
         }
         userDao.save(user);
     }
