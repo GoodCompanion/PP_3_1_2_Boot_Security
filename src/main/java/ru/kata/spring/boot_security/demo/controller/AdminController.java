@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.dto.CreateUserRequest;
+import ru.kata.spring.boot_security.demo.dto.UpdateUserRequest;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
@@ -68,25 +69,8 @@ public class AdminController {
 
     @PostMapping("/edit")
     @PreAuthorize("hasRole('ADMIN')")
-    public String updateUser(@RequestParam("id") Long id,
-                             @RequestParam("username") String username,
-                             @RequestParam("password") String password,
-                             @RequestParam("name") String name,
-                             @RequestParam("surname") String surname,
-                             @RequestParam("age") int age,
-                             @RequestParam(value = "roleIds", required = false) Set<Long> roleIds) {
-        User user = userService.getUser(id);
-        user.setUsername(username);
-        user.setPassword(password);
-        user.setName(name);
-        user.setSurname(surname);
-        user.setAge(age);
-
-        if (roleIds != null && !roleIds.isEmpty()) {
-            Set<Role> roles = roleIds.stream().map(roleService::getRoleById).collect(Collectors.toSet());
-            user.setRoles(roles);
-        }
-        userService.updateUser(user);
+    public String updateUser(@Valid UpdateUserRequest request) {
+        userService.updateUser(request);
         return "redirect:/admin";
     }
 
