@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.kata.spring.boot_security.demo.dto.CreateUserRequest;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repository.RoleDao;
@@ -12,6 +13,7 @@ import ru.kata.spring.boot_security.demo.repository.UserDao;
 import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -32,6 +34,23 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void addUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userDao.save(user);
+    }
+
+    @Override
+    @Transactional
+    public void addUser(CreateUserRequest request) {
+        User user = new User();
+        user.setUsername(request.getUsername());
+        user.setPassword(request.getPassword());
+        user.setName(request.getName());
+        user.setSurname(request.getSurname());
+        user.setAge(request.getAge());
+
+        if (request.getRoleIds() != null && !request.getRoleIds().isEmpty()) {
+            Set<Role> roles = roleDao.findAllById(request.getRoleIds()).stream().collect(Collectors.toSet());
+            user.setRoles(roles);
+        }
         userDao.save(user);
     }
 
