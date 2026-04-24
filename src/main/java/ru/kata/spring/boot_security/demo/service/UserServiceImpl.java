@@ -114,24 +114,4 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(Long id) {
         userDao.deleteById(id);
     }
-
-    // временные пользователи и роли для теста
-    @PostConstruct
-    @Transactional
-    public void init() {
-        if (userDao.count() == 0) {
-            Role adminRole = new Role("ROLE_ADMIN");
-            Role userRole = new Role("ROLE_USER");
-
-            if (roleDao.count() == 0) {
-                roleDao.save(adminRole);
-                roleDao.save(userRole);
-            }
-
-            User admin = new User("admin", "admin", "Владимир", "Калинин", 25, Set.of(adminRole, userRole));
-            User user = new User("user", "user", "Эрик", "Цой", 24, Set.of(userRole));
-            addUser(admin);
-            addUser(user);
-        }
-    }
 }
